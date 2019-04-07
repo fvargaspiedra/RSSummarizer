@@ -1,0 +1,3 @@
+https://lb.webservices.illinois.edu/rss/19/text.xml
+http://news.mit.edu/mitnews-rss.xml
+http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml

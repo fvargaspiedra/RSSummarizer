@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="icon" href="static/favicon.png" type="image/png">
+
+    <title>RSSummary</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="static/navbar-top-fixed.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+  </head>
+
+  <body>
+
+    <header>
+    <nav class="navbar navbar-expand-md navbar-light fixed-top bg-light">
+      <a class="navbar-brand navbar-brand-logo" href="/">
+        <div>
+          <img src="static/rssummary.png" height="40">
+        </div>
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="https://github.com">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com">Contact</a>
+          </li>
+        </ul>
+
+        <form>
+          <div class="input-group">
+            <input class="form-control" placeholder="Search this..." id="search_query">
+            <div class="input-group-append">
+              <label class="input-group-text">by</label>
+            </div>      
+            <div class="input-group-append">
+              <select class="custom-select mr-sm-2" id="search_filter">
+                <option value="keyword" selected>keyword</option>
+                <option value="sentiment">sentiment</option>
+              </select>
+            </div>
+            <input type="button" class="btn btn-outline-success" value="Search" id="submit">
+          </div>
+        </form>
+      </div>
+    </nav>
+    </header>
+
+    <main role="main" class="container pb-1">
+
+      <div class="alert alert-secondary text-justify p-4" role="alert">
+        <h4 class="alert-heading">RSSummary</h4>
+        Below you will find a deck of cards. Each card is a digested news article from many different RSS feed sources. Each card includes the title, description, author, and the link to the news article. It also includes clickable <span class='badge badge-dark'>keyword</span> tags and <span class='badge badge-info'>sentiment</span> tags.
+      </div>
+
+      <div class="card-columns" id="cards">
+      </div>
+
+    </main>
+
+    <footer class="footer">
+      <div class="container text-center">
+        <span class="text-muted">CS-498 CCA - <a href="https://github.com" target="_blank">Team #12</a>. 2019 &#x1F60A</span>
+      </div>
+    </footer>
+
+    <script>
+
+      // Global variables
+      // Store the last key fetched
+      var last_key = 0;
+      // Store sentiment or keyword filter
+      var sentiment_filter = "{{ data.sentiment_filter }}"
+      var keyword_filter = "{{ data.keyword_filter }}"
+
+      $(document).ready(function() {
+        // Load latest set of cards
+        getCards(20, 0, sentiment_filter, keyword_filter)
+
+        // When user reaches bottom of the page, fetch 20 more cards
+        $(window).on("scroll", function() {
+          var scrollHeight = $(document).height();
+          var scrollPosition = $(window).height() + $(window).scrollTop();
+          if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
+              getCards(20, last_key, sentiment_filter, keyword_filter)
+          }
+        });
+
+        // When there is a search
+        $('#submit').click(function(){
+          // Only do something when there is a search query
+          if($('#search_query').val()) {
+            window.location.href="/?" + $('#search_filter option:selected').text() + "=" + $('#search_query').val();
+          }
+        });
+      });
+
+      // Get the list of projects for a specific environment (qa or labs) 
+      function getCards(numberArticles, startKey = 0, sentimentFilter = "all", keywordFilter = "all") {
+        // Get the information from the server
+        $.ajax({
+          type : 'GET',
+          url : '/v1/get-articles?number=' + numberArticles + '&start=' + startKey + '&sentiment=' + sentimentFilter + '&keyword=' + keywordFilter,
+          error: function(request, status, error) {
+            addAlert(request.responseText)
+          }
+        })
+        .done(function(data) {
+          // Append cards with the values obtained from the server
+          $.each(data.RSSummary, function(i, card) {
+            var sentiments = "";
+            var keywords = "";
+            last_key = card.key;
+            $.each(card.keywords, function (j, keyword) {
+              keywords = keywords + "<span class='badge badge-dark'><a href='/?keyword=" + keyword + "' style='color: #ffffff; text-decoration: none;'>" + keyword + "</a></span>\n";
+            })
+            $.each(card.sentiments, function (j, sentiment) {
+              sentiments = sentiments + "<span class='badge badge-info'><a href='/?sentiment=" + sentiment + "' style='color: #ffffff; text-decoration: none;'>" + sentiment + "</a></span>\n";
+            })
+            $("#cards").append("<div class='card'><div class='card-header'>" + card.title + "</div><div class='card-body'><p class='card-text'>" + card.description + "</p><p class='text-muted text-right'><small>" + card.author + "</small></p><p>" + keywords + sentiments + "</p></div><div class='card-footer text-muted text-right'><a href='" + card.url + "' target='_blank'>Link to article</a></div></div>");
+          });
+        });
+      }
+    </script>
+
+  </body>
+</html>

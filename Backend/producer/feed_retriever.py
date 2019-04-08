@@ -40,5 +40,5 @@ def download_rss(url, filename, output_directory):
 	# Only write output if response is a 200
 	if response.status_code is 200:
 		with open(output_directory + filename, 'w') as f:
-			f.write(response.text.encode('utf-8'))
+			f.write(response.text)
 

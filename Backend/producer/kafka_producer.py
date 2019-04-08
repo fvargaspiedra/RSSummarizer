@@ -44,7 +44,7 @@ def parse_xml_feed(feed_file):
 		timestamp = now.strftime("%Y%m%d%H%M%S%f")
 
 		# Publish
-		producer.produce(topic= 'rss', key=timestamp, value=json_data)
+		producer.produce(topic= 'rss', key = timestamp, value = json_data)
 
 	# Clean producer object
 	producer.flush()

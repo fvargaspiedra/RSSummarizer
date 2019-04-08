@@ -1,5 +1,3 @@
-#! /usr/bin/python
-
 from textblob import TextBlob
 from rake_nltk import Rake
 import time
@@ -46,12 +44,15 @@ def parseJSON(data):
 
   # Add timestamps as key, sentiments, and keywords to the digested RSS Feed
   data['key'] = time.time();
-  data['sentiment'] = extractSentiment(data["description"])
-  data['keyword'] = extractKeyword(data["description"])
+
+  # Only if description exists we should apply the NLP analysis
+  if data["description"]:
+    data['sentiment'] = extractSentiment(data["description"])
+    data['keyword'] = extractKeyword(data["description"])
+  else:
+    data['sentiment'] = ""
+    data['keyword'] = ""
 
   # Re-construct JSON and return output
   parsedFeed = json.dumps(data, indent = 2)
   return parsedFeed
-
-result = parseJSON(rssData)
-print(result)

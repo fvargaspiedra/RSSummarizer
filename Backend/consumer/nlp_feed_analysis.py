@@ -43,8 +43,8 @@ def parseJSON(data):
   data = json.loads(data)   
 
   # Add timestamps as key, sentiments, and keywords to the digested RSS Feed
-  data['key'] = time.time();
-
+  # The _id is used because this JSON are meant to be stored in MongoDB.
+  data['_id'] = time.time();
   # Only if description exists we should apply the NLP analysis
   if data["description"]:
     data['sentiment'] = extractSentiment(data["description"])

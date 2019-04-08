@@ -35,7 +35,11 @@ Once the JSON RSS Feed data is parsed by using Rake (for keyword extraction) and
 
 # Development and testing
 
-The module expects a JSON with the input structure shown in the previous section. The output will be stored in a noSQL database to be used by the front-end.
+The module expects a JSON with the input structure shown in the previous section. The output will be stored in a noSQL database (MongoDB) to be used by the front-end.
+
+To install MongoDB, depending on your OS you can download it from here: https://www.mongodb.com/download-center/community and follow the installation instructions depending on your OS.
+
+For Mac, you can follow these instructions: https://treehouse.github.io/installation-guides/mac/mongo-mac.html. Make sure you create the /data/db directory after installing.
 
 # Authors
 

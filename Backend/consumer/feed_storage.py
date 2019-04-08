@@ -25,11 +25,10 @@ def getFeed(database, collection, host, port, start, num_docs, filter_keyword = 
 	if filter_sentiment != "":
 		query["sentiment"] = { "$regex" : filter_sentiment }
 
-	# When start = 0, then just get the latest num_docs elements in the DB.
-	if start == 0:
-		docs = col.find(query).sort("_id", -1).limit(num_docs)
-	else:
-		# Add timestamp limit to query
+	# Add to query when stop is not 0, otherwise it will simply fetch the latest num_docs documents
+	if start != 0:
 		query["_id"] = { "$lt" : start }
-		docs = col.find(query).sort("_id", -1).limit(num_docs)
+
+	# Run the query and get a list of documents	
+	docs = col.find(query).sort("_id", -1).limit(num_docs)
 	return docs

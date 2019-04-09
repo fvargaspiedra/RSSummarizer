@@ -40,7 +40,7 @@
           </li>
         </ul>
 
-        <form>
+        <form id="search_form">
           <div class="input-group">
             <input class="form-control" placeholder="Search this..." id="search_query">
             <div class="input-group-append">
@@ -97,6 +97,13 @@
           if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
               getCards(20, last_key, sentiment_filter, keyword_filter)
           }
+        }); 
+
+        // Prevent submit with enter
+        $('#search_form').bind('keydown', function(e) {
+            if (e.keyCode == 13) {
+                e.preventDefault();
+            }
         });
 
         // When there is a search

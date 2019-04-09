@@ -30,5 +30,5 @@ def getFeed(database, collection, host, port, start, num_docs, filter_keyword = 
 		query["_id"] = { "$lt" : start }
 
 	# Run the query and get a list of documents	
-	docs = col.find(query).sort("_id", -1).limit(num_docs)
+	docs = list(col.find(query).sort("_id", -1).limit(num_docs))
 	return docs

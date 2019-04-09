@@ -108,8 +108,7 @@
         });
       });
 
-      // Get the list of projects for a specific environment (qa or labs) 
-      function getCards(numberArticles, startKey = 0, sentimentFilter = "all", keywordFilter = "all") {
+      function getCards(numberArticles, startKey = 0, sentimentFilter = "", keywordFilter = "") {
         // Get the information from the server
         $.ajax({
           type : 'GET',
@@ -120,16 +119,14 @@
         })
         .done(function(data) {
           // Append cards with the values obtained from the server
-          $.each(data.RSSummary, function(i, card) {
+          $.each(data, function(i, card) {
             var sentiments = "";
             var keywords = "";
-            last_key = card.key;
-            $.each(card.keywords, function (j, keyword) {
+            last_key = card._id;
+            $.each(card.keyword, function (j, keyword) {
               keywords = keywords + "<span class='badge badge-dark'><a href='/?keyword=" + keyword + "' style='color: #ffffff; text-decoration: none;'>" + keyword + "</a></span>\n";
             })
-            $.each(card.sentiments, function (j, sentiment) {
-              sentiments = sentiments + "<span class='badge badge-info'><a href='/?sentiment=" + sentiment + "' style='color: #ffffff; text-decoration: none;'>" + sentiment + "</a></span>\n";
-            })
+            sentiments = "<span class='badge badge-info'><a href='/?sentiment=" + card.sentiment + "' style='color: #ffffff; text-decoration: none;'>" + card.sentiment + "</a></span>\n";
             $("#cards").append("<div class='card'><div class='card-header'>" + card.title + "</div><div class='card-body'><p class='card-text'>" + card.description + "</p><p class='text-muted text-right'><small>" + card.author + "</small></p><p>" + keywords + sentiments + "</p></div><div class='card-footer text-muted text-right'><a href='" + card.url + "' target='_blank'>Link to article</a></div></div>");
           });
         });

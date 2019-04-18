@@ -1,6 +1,6 @@
 # RSSummarizer - An RSS News Feed digester on the cloud
 
-<img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/logo.png" width="200">
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/logo.png" width="200"></p>
 
 This work is part of the final project for CS-498 CCA course at University of Illinois Urbana-Champaign.
 

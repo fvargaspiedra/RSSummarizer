@@ -1,6 +1,7 @@
 from textblob import TextBlob
 from rake_nltk import Rake
 import time
+import collections
 import json
 import re
 
@@ -18,11 +19,13 @@ def extractKeyword(text):
   # Extract keywords from text and return maximum 3
   r = Rake()
   r.extract_keywords_from_text(cleanText(text))
-  resultKeyword = r.get_ranked_phrases()
-  if(len(resultKeyword)>2):
-        return resultKeyword[:3]
+  resultKeyword = r.frequency_dist
+  Keyword = list(collections.Counter(resultKeyword))
+  Keyword=[x for x in Keyword if len(x)>2]
+  if(len(Keyword)>2):
+        return Keyword[:3]
   else:
-        return resultKeyword[:2]
+        return Keyword[:2]
 
 def extractSentiment(text):
   # Get polarity values and return sentiment type

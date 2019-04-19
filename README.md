@@ -10,9 +10,17 @@ Even though there are many RSS readers available, there is no a centralized plac
 
 The implementation is based on cloud technologies. The engine fetches real-time data coming from many popular RSS news feeds URLs using data streaming technologies (Kafka) to publish the parsed feeds, run NLP Machine Learning models to do sentiment analysis and keyword extraction over the feed information, and finally store the digested and consolidated information in a noSQL database (MongoDB). The digested information is presented to the end user through a front-end (Flask and Bootstrap) with a search bar to find keywords or filter by sentiment.
 
-## To be added
+## To be added (enhancements)
 
-TBD
+Here you can find a list of possible enhancements for this implementation:
+
+1. Create a web scraper engine in charge of automatically populate the input file with more and more URL of news RSS Feeds.
+2. Use a distributed architecture for MongoDB.
+3. Consider using Apache Spark MLLib or similar to digest the pusblished feeds on Kafka. This would add fault-tolerance to the system from end-to-end.
+4. Implement the whole system in the cloud.
+5. Improve the module that compares the difference between RSS Feed XMLs to only publish new articles in case there are some repeated in the temporal files stored.
+6. Add a smarter search engine to the front-end that allows you to use natural language queries to find relevant articles. Some filters can also be added to search by date, etc.
+7. Add exception handling to all the code.
 
 ## Getting Started
 
@@ -82,24 +90,26 @@ Let's go over each of the components. The following instructions were tested on 
 	* Install Python 3 by following the instructions listed [here](https://docs.python-guide.org/starting/install3/osx/).
 	* Even though it is not strictly necessary, it is highly recommended to use a virtual environment so you can have a clean environment to install only the required libraries to test RSSummarizer and avoid overlapping or 'polluting' your main environment. A nice tutorial can be found [here](https://realpython.com/python-virtual-environments-a-primer/).
 	* Once your Python 3.X environment is ready you can proceed to install the dependencies. You can simply use the 'requirements.txt' file located in this repository as follows:
-
-``` pip install -r requirements.txt ```
+```
+pip install -r requirements.txt
+```
 
 2. Kafka/Zookeeper Docker container
 
 	* Download and install Docker Desktop from [here](https://www.docker.com/products/docker-desktop)
 	* Download the Docker container (Kafka + Zookeper) as follows:
-
-``` docker pull spotify/kafka ```
-
+```
+docker pull spotify/kafka
+```
 	* Once the image is downloaded, run this command to launch the instance:
-
-``` docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka ```
+```
+docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka
+```
 
 3. MongoDB
 
 	* Install and run mongoDB by following the instructions [here](https://treehouse.github.io/installation-guides/mac/mongo-mac.html)
-	* Once installed just run mongoDB deamon:
+	* Once installed just run mongoDB deamon on the terminal:
 
 ```
 $mongod
@@ -107,17 +117,65 @@ $mongod
 
 ## Running the tests
 
-TBD
+To test the end-to-end implementation, follow these instructions:
+
+1. Open a terminal and run mongoDB deamon `$mongodb`.
+2. Open another terminal and run the Docker container as instructed in the previous section.
+3. Open another terminal and run your Python virtual environment (in case you are using one as recommended). Go to the 'consumer' directory (`$cd consumer`) and execute the following command:
+
+```
+$python main_consumer.py
+```
+
+This will make your 'consumer' side to start listening for new published feeds through 'rss' topic on Kafka.
+
+4. Open another terminal and run your Python virtual environment (in case you are using one as recommended). Go to the 'producer' directory (`$cd producer`) and execute the following commands:
+
+```
+$mkdir /tmp/kafka_output
+$python main_producer.py ../input/rss_feeds_url.txt /tmp/kafka_output/
+```
+
+Notice that we are using "/tmp/kafka_output" to store the temporal XML files used to create the feeds. After running this command, a set of RSS Feed are parsed to JSON and published to Kafka. The output should be similar to the following:
+
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/main_producer_output.png" width="400"></p>
+
+If you go back to the terminal where you executed the 'main_consumer.py' program you should see something like this:
+
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/main_consumer_output.png" width="400"></p>
+
+This simply means that all the available RSS Feed JSONs published on Kafka have been consumed, digested, and stored in MongoDB.
+
+In a production environment the idea is that 'main_producer.py' should be executed periodically (e.g. every 30 seconds) so the stream of RSS Feed JSONs will be continously pushed to the Kafka 'rss' topic. The bigger the list of RSS Feed URLs, the more intensive the stream will be.
+
+5. Now you can start consuming the information stored on MongoDB by starting Flask API and the front-end. For this purpose we are using the embedded testing web server on Flask. Open another terminal and run your Python virtual environment (in case you are using one as recommended). Go to the 'consumer' directory (`$cd consumer`) and execute the following commands:
+
+```
+$python rss_feed_front_end.py
+```
+
+Open a browser and navigate to http://localhost:5000/. You'll get the web interface as follows:
+
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/front_end_view.png" width="400"></p>
+
+If you scroll down, more cards will be loaded dynamically. If you click on any 'keyword' or 'sentiment' you'll filter a search based on those. Similarly, if you click on 'Link to the article' a new tab will be opened to the source of the article. You can also use the 'search bar' at the top right to look for a specific keyword or sentiment.
+
+Here is an example of a filtered view on the keyword 'time':
+
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/filtered_front_end_view.png" width="400"></p>
 
 ## Deployment
 
-TBD
+This implementation was not deployed to any production environment. It should be easily migrated to a cloud environment that has all the components installed.
 
 ## Built With
 
-TBD
+RSSummarize is powered by several open-source components. The main ones are:
 
-## Versioning
+* [Apache Kafka](https://kafka.apache.org/)
+* [Flask](http://flask.pocoo.org/)
+* [MongoDB](https://www.mongodb.com/)
+* [Python](https://www.python.org/)
 
 ## Authors
 
@@ -127,8 +185,10 @@ TBD
 
 ## License
 
-TBD
+This is an open project as part of the learning experience of CS-498 CCA. Feel free to re-use the code, implement it, and enhance it under GNU v3 license. 
 
 ## Acknowledgments
 
-TBD
+Thanks to our instructors and TAs for all the support throughout the course.
+
+Thanks to the open-source community for let us use such an amazing set of tools to build this concept.

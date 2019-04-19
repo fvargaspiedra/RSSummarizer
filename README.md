@@ -83,24 +83,18 @@ Let's go over each of the components. The following instructions were tested on 
 	* Even though it is not strictly necessary, it is highly recommended to use a virtual environment so you can have a clean environment to install only the required libraries to test RSSummarizer and avoid overlapping or 'polluting' your main environment. A nice tutorial can be found [here](https://realpython.com/python-virtual-environments-a-primer/).
 	* Once your Python 3.X environment is ready you can proceed to install the dependencies. You can simply use the 'requirements.txt' file located in this repository as follows:
 
-``` 
-	pip install -r requirements.txt
-```
+``` pip install -r requirements.txt ```
 
 2. Kafka/Zookeeper Docker container
 
 	* Download and install Docker Desktop from [here](https://www.docker.com/products/docker-desktop)
 	* Download the Docker container (Kafka + Zookeper) as follows:
 
-```
-	docker pull spotify/kafka
-```
+``` docker pull spotify/kafka ```
 
 	* Once the image is downloaded, run this command to launch the instance:
 
-```
-	docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka
-```
+``` docker run -p 2181:2181 -p 9092:9092 --env ADVERTISED_HOST=localhost --env ADVERTISED_PORT=9092 spotify/kafka ```
 
 3. MongoDB
 
@@ -108,7 +102,7 @@ Let's go over each of the components. The following instructions were tested on 
 	* Once installed just run mongoDB deamon:
 
 ```
-	$mongod
+$mongod
 ```
 
 ## Running the tests

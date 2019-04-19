@@ -138,11 +138,11 @@ $python main_producer.py ../input/rss_feeds_url.txt /tmp/kafka_output/
 
 Notice that we are using "/tmp/kafka_output" to store the temporal XML files used to create the feeds. After running this command, a set of RSS Feed are parsed to JSON and published to Kafka. The output should be similar to the following:
 
-<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/main_producer_output.png" width="400"></p>
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/main_producer_output.png" width="800"></p>
 
 If you go back to the terminal where you executed the 'main_consumer.py' program you should see something like this:
 
-<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/main_consumer_output.png" width="400"></p>
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/main_consumer_output.png" width="800"></p>
 
 This simply means that all the available RSS Feed JSONs published on Kafka have been consumed, digested, and stored in MongoDB.
 
@@ -156,13 +156,13 @@ $python rss_feed_front_end.py
 
 Open a browser and navigate to http://localhost:5000/. You'll get the web interface as follows:
 
-<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/front_end_view.png" width="400"></p>
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/front_end_view.png" width="800"></p>
 
 If you scroll down, more cards will be loaded dynamically. If you click on any 'keyword' or 'sentiment' you'll filter a search based on those. Similarly, if you click on 'Link to the article' a new tab will be opened to the source of the article. You can also use the 'search bar' at the top right to look for a specific keyword or sentiment.
 
 Here is an example of a filtered view on the keyword 'time':
 
-<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/filtered_front_end_view.png" width="400"></p>
+<p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/filtered_front_end_view.png" width="800"></p>
 
 ## Deployment
 

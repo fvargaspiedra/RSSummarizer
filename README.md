@@ -2,7 +2,7 @@
 
 <p align="center"><img src="https://github.com/fvargaspiedra/RSSummarizer/blob/master/misc/logo.png" width="250"></p>
 
-This work is part of the final project for CS-498 CCA course at University of Illinois Urbana-Champaign.
+This work is part of the final project for CS-498 CCA course at University of Illinois Urbana-Champaign. In case you wonder, the logo is original artwork, engineers can also be artists.
 
 RSSummarizer is an engine to digest RSS Feeds from popular public news sites (e.g. New York Times, BBC, CNN, etc.) and present them in a user friendly interface so the user can explore, search, and find interesting news.
 

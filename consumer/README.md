@@ -23,7 +23,7 @@ Once the JSON RSS Feed data is parsed by using Rake (for keyword extraction) and
   "author": "Peter Dizikes | MIT News Office",
   "description": "MIT Professor Jennifer Light digs into the history of the idea that students aren\u2019t part of the labor force.",
   "url": "http://news.mit.edu/2019/jennifer-light-student-athletes-0325",
-  "key": 1554673646.549649,
+  "_id": 1554673646.549649,
   "sentiment": "positive",
   "keyword": [
     "mit professor jennifer light digs",
@@ -40,6 +40,8 @@ The module expects a JSON with the input structure shown in the previous section
 To install MongoDB, depending on your OS you can download it from here: https://www.mongodb.com/download-center/community and follow the installation instructions depending on your OS.
 
 For Mac, you can follow these instructions: https://treehouse.github.io/installation-guides/mac/mongo-mac.html. Make sure you create the /data/db directory after installing.
+
+Refer to the main README.md file for more details on installation and testing.
 
 # Authors
 

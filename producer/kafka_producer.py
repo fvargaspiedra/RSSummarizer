@@ -3,6 +3,7 @@ import os
 import datetime
 import json
 import xml.etree.ElementTree as ET
+from bs4 import BeautifulSoup 
 
 conf = {'bootstrap.servers': 'localhost:9092', 'client.id': 'rss'}
 producer = Producer(conf)
@@ -29,14 +30,40 @@ def parse_xml_feed(feed_file):
 	# Iterate over the RSS feed items which represents each article or post
 	for feed_item in channel_element.iter('item'):
 		# Extract author, description, title and URL of each article or post
-		author = feed_item.find('dc:creator',ns).text if feed_item.find('dc:creator', ns) is not None else feed_item.find('author').text
-		url = feed_item.find('atom:link', ns).attrib['href'] if feed_item.find('atom:link', ns) is not None else feed_item.find('link').text
+		if feed_item.find('author') is not None:
+			author = feed_item.find('author').text
+		else:
+			author = "Not specified"
+
+		if feed_item.find('link') is not None:
+			url = feed_item.find('link').text
+		else: 
+			# Not having a URL is unacceptable
+			continue
+
+		if feed_item.find('title') is not None:
+			title = feed_item.find('title').text
+		else: 
+			# Not having a title is unacceptable
+			continue	
+
+		if feed_item.find('description') is not None:
+			description = feed_item.find('description').text
+			# Sometimes the description is empty, make sure that's not the case
+			if description is not None:
+				# Clean description in case it comes with images or external links as we only want plain text
+				description = BeautifulSoup(description, "lxml").text
+			else:
+				continue
+		else: 
+			# Not having a description is unacceptable
+			continue
 
 		# Format them as JSON before publishing
 		feed = {
-			"title" : feed_item.find('title').text,
+			"title" : title,
 			"author" : author,
-			"description" : feed_item.find('description').text,
+			"description" : description,
 			"url" : url
 		}
 		json_data = json.dumps(feed)

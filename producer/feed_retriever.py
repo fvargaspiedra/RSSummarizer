@@ -37,6 +37,9 @@ def download_rss(url, filename, output_directory):
 	# Fetch XML from RSS feed URL and save it
 	response = requests.get(url)
 
+	# Use right encoding to avoid issues
+	response.encoding = "utf-8-sig"
+
 	# Only write output if response is a 200
 	if response.status_code is 200:
 		with open(output_directory + filename, 'w') as f:
